@@ -1,3 +1,4 @@
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -68,6 +69,9 @@ public class ClienteHilo extends Thread {
                         System.out.println("Que clave valor deseas modificar?");
                         String clavemodificar = sn.next();
                         out.writeUTF(clavemodificar);
+                        System.out.println(in.readUTF());
+                        String nuevovalor = sn.next();
+                        out.writeUTF(nuevovalor);
                         System.out.println(in.readUTF());
                         break;
                     case 5:

@@ -11,10 +11,10 @@ import java.io.IOException;
 public class MainServer {
 
   public static void main(String[] args) throws IOException {
-    Servidor serv = new Servidor(); //Se crea el servidor
+    Servidor serv = new Servidor(8000); //Se crea el servidor
 
     System.out.println("Iniciando servidor\n");
-    serv.start(); //Se inicia el servidor
+
   }
 
 

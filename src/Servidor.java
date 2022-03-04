@@ -1,80 +1,159 @@
-import java.io.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/************************************************************************
- Made by        PatrickSys
- Date           27/02/2022
- Package        utils
- Description:
- ************************************************************************/
-
+import static java.lang.Thread.sleep;
 
 public class Servidor {
 
-    protected Socket cs;
-    protected ServerSocket ss;
-    protected OutputStream salidaCliente;
-    protected OutputStream salidaServidor;
-    protected String mensajeServidor;
-    public Servidor() throws IOException {
+    protected HashMap<String, String> map;
+    ServerSocket serverSocket;
+    Socket sc;
+
+    DataInputStream in;
+    DataOutputStream out;
+
+
+    public Servidor(int port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        this.map = new HashMap<>();
+        System.out.println("Servidor iniciado");
+        this.sc = serverSocket.accept();
+        in = new DataInputStream(sc.getInputStream());
+        out = new DataOutputStream(sc.getOutputStream());
     }
 
-  public void start() throws IOException // Método para iniciar el servidor
-      {
-          ss = new ServerSocket(1234);
-
-          try {
-      System.out.println("Esperando..."); // Esperando conexión
-
-      cs = ss.accept(); // Accept comienza el socket y espera una conexión desde un cliente
-
-      System.out.println("Cliente en línea");
+    public static void main(String[] args) {
 
 
-      Map<String, String> cacheMap = new HashMap<>();
+        try {
 
+            Servidor servidor = new Servidor(5000);
 
-      while(true) {
+            while(true){
 
-          // Se obtiene el flujo de salida del cliente para enviarle mensajes
-          salidaCliente = cs.getOutputStream();
-          PrintWriter printCliente = new PrintWriter(salidaCliente, true);
+                // Espero la conexion del cliente
 
-          // Se le envía un mensaje al cliente usando su flujo de salida
-          printCliente.write("Petición recibida y aceptada");
+                // Pido al cliente el nombre al cliente
+                servidor.out.writeUTF("Identifícate: ");
+                String nombreCliente = servidor.in.readUTF();
 
-          // Se obtiene el flujo entrante desde el cliente
-          BufferedReader entrada = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+                servidor.out.writeUTF("Protocolo a usar: _clave_valor_");
+                System.out.println("Creada la conexion con el cliente " + nombreCliente);
 
-          System.out.println(entrada.readLine());
-          System.out.println("reply sent to client");
-              System.out.println(mensajeServidor);
+                // Arrancamos el servidor
+                servidor.run(nombreCliente);
 
-              String[] valores = mensajeServidor.split("#");
-              String clave = valores[0];
-              String valor = valores[1];
-              // Mientras haya mensajes desde el cliente
+                sleep(500);
+            }
 
-
-              // Se muestra por pantalla el mensaje recibido
-              System.out.println("clave: " + clave + " valor: " + valor);
-              cacheMap.put(clave, valor);
-
-
-      }
-
-
-
-
-
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
+
+
+    }
+
+    public void run(String nombreCliente) {
+
+        String strOpcion;
+        int opcion;
+        boolean salir = false;
+        while (!salir) {
+
+            try {
+                strOpcion = in.readUTF();
+                System.out.println(strOpcion+ " opcion");
+                if(strOpcion.equals("s")) {
+                    salir = true;
+                    continue;
+                }
+
+                opcion = Integer.parseInt(strOpcion);
+                switch (opcion) {
+                    case 1:
+                        // Recibo el numero aleatorio
+                        out.writeUTF("Protocolo: _clave_valor_");
+                        String entrada = in.readUTF();
+                        String clave = entrada.split("_")[1];
+                        String valor = entrada.split("_")[2];
+                        if (map.containsKey(clave)){
+                            out.writeUTF("La clave ya existe, vuelve a intentarlo");
+                        }else{
+                            map.put(clave, valor);
+                            out.writeUTF("Entrada con clave " + clave + " y valor " + valor + " guardados correctamente");
+                        }
+                        break;
+
+                    case 2:
+                        out.writeUTF("Protocolo: _clave_");
+                        String claveeliminar = in.readUTF().split("_")[1];
+                        if (map.containsKey(claveeliminar))
+                        {
+                            map.remove(claveeliminar);
+                            out.writeUTF("La entrada ha sido borrada");
+                        }
+
+                        else if(!map.containsKey(claveeliminar))
+                            {
+                            out.writeUTF("Dicha clave no existe");
+                        }
+
+                        break;
+
+                    case 3:
+                        out.writeUTF("Protocolo: _clave_");
+                        String claveconsulta = in.readUTF().split("_")[1];
+                        out.writeUTF(map.getOrDefault(claveconsulta, "Clave no encontrada"));
+                        break;
+
+                    case 4:
+                        out.writeUTF("Protocolo: _clave_");
+                        String clavemodificar = in.readUTF();
+                        if (map.containsKey(clavemodificar))
+                        {
+                            out.writeUTF("indique un nuevo valor para la clave: ");
+                            String valormodificado = in.readUTF();
+                            map.replace(clavemodificar, valormodificado);
+                            out.writeUTF("Modificado con exito, la clave " + clavemodificar + " tiene como nuevo valor " + valormodificado);
+                        }
+                        else if(!map.containsKey(clavemodificar))
+                            {
+                            out.writeUTF("Clave no encontrada");
+                        }
+
+                        break;
+
+                    case 5:
+                        salir = true;
+                        break;
+                    default:
+                        out.writeUTF("Solo numero del 1 al 4");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            // Cierro el socket
+            sc.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        System.out.println("Conexion cerrada con el cliente " + nombreCliente);
+
+    }
+
 
 
 }

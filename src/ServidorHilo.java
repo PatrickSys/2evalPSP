@@ -1,9 +1,10 @@
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +24,6 @@ public class ServidorHilo extends Thread {
         this.map = map;
     }
 
-
     @Override
     public void run() {
 
@@ -38,7 +38,7 @@ public class ServidorHilo extends Thread {
                         // Recibo el numero aleatorio
                         String clave = in.readUTF();
                         if (map.containsKey(clave)){
-                                out.writeUTF("La clave ya existe, vuelve a intentarlo");
+                            out.writeUTF("La clave ya existe, vuelve a intentarlo");
                         }else{
                             out.writeUTF("Clave valida, indica el valor");
                             String valor = in.readUTF();
@@ -60,16 +60,25 @@ public class ServidorHilo extends Thread {
 
                     case 3:
                         String claveconsulta = in.readUTF();
-                       if (map.containsKey(claveconsulta)){
-                           out.writeUTF(map.get(claveconsulta));
-                       }else{
-                           out.writeUTF("Clave no encontrada");
-                       }
+                        if (map.containsKey(claveconsulta)){
+                            out.writeUTF(map.get(claveconsulta));
+                        }else{
+                            out.writeUTF("Clave no encontrada");
+                        }
 
                         break;
 
                     case 4:
-
+                        String clavemodificar = in.readUTF();
+                        if (map.containsKey(clavemodificar)){
+                            out.writeUTF("Clave " +clavemodificar+ " con valor "+ map.get(clavemodificar) + " encontrada.\n" +
+                                    "indique un nuevo valor para la clave: ");
+                            String valormodificado = in.readUTF();
+                            map.replace(clavemodificar, valormodificado);
+                            out.writeUTF("Modificado con exito, la clave " + clavemodificar + " tiene como nuevo valor " + valormodificado);
+                        }else{
+                            out.writeUTF("Clave no encontrada");
+                        }
 
                         break;
 

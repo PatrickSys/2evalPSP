@@ -12,10 +12,10 @@ public class MainClient {
 
     public static void main(String[] args) throws IOException
     {
-        Cliente cli = new Cliente(); //Se crea el cliente
+        Cliente cli = new Cliente("127.0.0.1", 5000); //Se crea el cliente
 
         System.out.println("Iniciando cliente\n");
-        cli.startClient(); //Se inicia el cliente
+//        cli.startClient(); //Se inicia el cliente
     }
 }
 
