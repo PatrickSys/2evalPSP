@@ -34,71 +34,15 @@ public class Cliente extends Thread{
 
 
         String mensaje;
-        String strOpcion;
-        int opcion =  -1;
-        boolean salir = false;
 
-        while (!salir) {
+        while (true) {
 
             try {
-                System.out.println("1. Almacenar un par clave valor\n2. Eliminar un par clave valor\n3. Consultar el valor asociado a una clave" +
-                        "\n4. Modificar el valor asociado a una clave\ns. Salir");
+                System.out.println("mensaje a enviar al servidor: ");
+                mensaje = scanner.next();
 
-                strOpcion = scanner.next();
-                if(strOpcion.equals("s")) {
-                    out.writeUTF("salir");
-                    salir = true;
-                    continue;
-                }
-
-                try {
-                    opcion = Integer.parseInt(strOpcion);
-                }catch(Exception e) {
-                    opcion = introduceNumero(scanner);
-                }
-
-                out.writeUTF(String.valueOf(opcion));
-                switch (opcion) {
-                    case 1:
-
-                        System.out.println("Servidor dice: " + in.readUTF());
-                        System.out.println("Introduce _clave_valor_");
-                        String entrada = scanner.next();
-
-                        out.writeUTF(entrada);
-                        System.out.println("Servidor dice: " + in.readUTF());
-                        break;
-                    case 2:
-
-                        System.out.println("Servidor dice: " + in.readUTF());
-                        System.out.println("Que entrada  deseas eliminar? introduce la _clave_:");
-                        String claveeliminar = scanner.next();
-                        out.writeUTF(claveeliminar);
-                        System.out.println(in.readUTF());
-
-                        break;
-                    case 3:
-                        System.out.println("Servidor dice: " + in.readUTF());
-                        System.out.println("Que clave deseas consultar?");
-                        String claveconsulta = scanner.next();
-                        out.writeUTF(claveconsulta);
-                        System.out.println(in.readUTF());
-                        break;
-                    case 4:
-                        System.out.println("Servidor dice: " + in.readUTF());
-                        System.out.println("Que entrada deseas modificar? introduce la _clave_ primero");
-                        String clavemodificar = scanner.next();
-                        out.writeUTF(clavemodificar);
-                        System.out.println(in.readUTF());
-                        String nuevovalor = scanner.next();
-                        out.writeUTF(nuevovalor);
-                        System.out.println(in.readUTF());
-                        break;
-                    default:
-                        mensaje = in.readUTF();
-                        System.out.println(mensaje);
-
-                }
+                out.writeUTF(mensaje);
+                System.out.println("Servidor dice: " + in.readUTF());
             } catch (IOException e) {
                e.printStackTrace();
             }

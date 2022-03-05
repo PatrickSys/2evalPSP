@@ -45,7 +45,8 @@ public class Servidor {
                 servidor.out.writeUTF("Identifícate: ");
                 String nombreCliente = servidor.in.readUTF();
 
-                servidor.out.writeUTF("Protocolo a usar: _clave_valor_");
+                servidor.out.writeUTF("Métodos disponibles: GUARDAR, ELIMINAR, " +
+                        "CONSULTAR, MODIFICAR\n el protocolo a usar es: METODO_CLAVE_VALOR, el valor sólo se debe pasar en la llamada cuando se use GUARDAR, ejemplo:\n GUARDAR_MANZANA_PERA\t CONSULTAR_MANZANA");
                 System.out.println("Creada la conexion con el cliente " + nombreCliente);
 
                 // Arrancamos el servidor
