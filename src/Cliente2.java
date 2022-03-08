@@ -16,35 +16,26 @@ public class Cliente2 {
     public static void main(String[] args) {
 
         try {
-            Scanner sn = new Scanner(System.in);
-            sn.useDelimiter("\n");
+            Scanner scan = new Scanner(System.in);
 
-            Socket sc = new Socket("127.0.0.2", 5000);
-
-            DataInputStream in = new DataInputStream(sc.getInputStream());
-            DataOutputStream out = new DataOutputStream(sc.getOutputStream());
+            Cliente cliente = new Cliente("127.0.0.1", 5000);
 
             // Leer mensaje del servidor
-            String mensaje = in.readUTF();
-            System.out.println(mensaje);
+            System.out.println("Servidor dice: " + cliente.in.readUTF());
 
             // Escribe el nombre y se lo manda al servidor
-            String nombre = sn.next();
-            out.writeUTF(nombre);
+            String message = scan.next();
+            cliente.out.writeUTF(message);
 
-            // ejecutamos el hilo
-            ClienteHilo hilo = new ClienteHilo(in, out);
-            hilo.start();
-            hilo.join();
+            // Empieza el programa cliente
+            cliente.start();
+            cliente.join();
 
-        } catch (IOException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
-
+    }
 
 
     }
 
-}

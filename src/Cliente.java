@@ -7,10 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Cliente extends Thread{
-    private DataInputStream in;
-    private DataOutputStream out;
-    private Socket sc;
-    private Scanner scanner;
+    protected DataInputStream in;
+    protected DataOutputStream out;
+    protected Socket sc;
+    protected Scanner scanner;
+
 
     public Cliente(String hostName, int port)  throws IOException {
         this.sc = new Socket(hostName, port);
@@ -30,16 +31,20 @@ public class Cliente extends Thread{
 //        this.out.writeUTF(message);
 //    }
     @Override
-    public void run() {
+    public void start() {
 
 
         String mensaje;
+        boolean salir = false;
 
-        while (true) {
+        while (!salir) {
 
             try {
-                System.out.println("mensaje a enviar al servidor: ");
+                System.out.println("mensaje a enviar al servidor: \nescribe SALIR para terminar la conexión ");
                 mensaje = scanner.next();
+                if(mensaje.equalsIgnoreCase("salir")) {
+                    salir = true;
+                }
 
                 out.writeUTF(mensaje);
                 System.out.println("Servidor dice: " + in.readUTF());
@@ -62,9 +67,6 @@ public class Cliente extends Thread{
             // Escribe el nombre y se lo manda al servidor
             String message = scan.next();
             cliente.out.writeUTF(message);
-
-            // Lee info sobre el protocolo a usar
-            System.out.println(cliente.in.readUTF());
 
             // Empieza el programa cliente
             cliente.start();
