@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
  Description:
  ************************************************************************/
 public class Server {
-    public static final String HOST = "localhost";
-    public static final int PORT = 1337;
+    private static final String HOST = "localhost";
+    private static final int PORT = 1337;
     private ServerSocketChannel serverChannel;
     private Selector selector;
     private SelectionKey serverKey;

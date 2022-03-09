@@ -7,6 +7,8 @@ package tutonio.Protocols;
  Description:
  ************************************************************************/
 public class Request {
+    public static final String SAVE_REQUEST = "SAVE#{key}#{value}#";
+    public static final String DELETE_REQUEST = "SAVE#{key}#{value}#";
     public static final String GET_REQUEST = "GET#{key}#{value}#";
 
 }
