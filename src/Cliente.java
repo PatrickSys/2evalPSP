@@ -54,38 +54,27 @@ public class Cliente extends Thread{
         }
     }
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
+    try {
+      Scanner scanner = new Scanner(System.in);
 
-        try {
-            Scanner scan = new Scanner(System.in);
+      Cliente cliente = new Cliente("127.0.0.1", 5000);
 
-            Cliente cliente = new Cliente("127.0.0.1", 5000);
+      // Leer mensaje del servidor
+      System.out.println("Servidor dice: " + cliente.in.readUTF());
 
-            // Leer mensaje del servidor
-            System.out.println("Servidor dice: " + cliente.in.readUTF());
+      // Escribe el nombre y se lo manda al servidor
+      String message = scanner.next();
+      cliente.out.writeUTF(message);
 
-            // Escribe el nombre y se lo manda al servidor
-            String message = scan.next();
-            cliente.out.writeUTF(message);
+      // Empieza el programa cliente
+      cliente.start();
+      cliente.join();
 
-            // Empieza el programa cliente
-            cliente.start();
-            cliente.join();
+      cliente.sc.close();
 
-        } catch (IOException | InterruptedException e) {
-           e.printStackTrace();
-        }
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
     }
-
-    private int introduceNumero(Scanner scanner) {
-        System.out.println("introduce un número entero: ");
-        String next = scanner.next();
-
-        try {
-            return Integer.parseInt(next);
-        }catch (NumberFormatException e ){
-            System.out.println("introduce un numero valido!");
-            return introduceNumero(scanner);
-        }
     }
 }
