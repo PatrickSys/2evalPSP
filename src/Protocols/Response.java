@@ -1,9 +1,9 @@
-package tutonio.Protocols;
+package Protocols;
 
 /************************************************************************
  Made by        PatrickSys
  Date           03/03/2022
- Package        tutonio.Protocols
+ Package        Protocols
  Description:
  ************************************************************************/
 public class Response {

@@ -21,15 +21,14 @@ public class Cliente extends Thread{
 
     }
 
-//    private void read() throws IOException {
-//        System.out.println(this.in.readUTF());
-//    }
-//
-//
-//    private void write() throws IOException {
-//        String message = scanner.next();
-//        this.out.writeUTF(message);
-//    }
+    private String read() throws IOException {
+        return this.in.readUTF();
+    }
+
+
+    private void write(String message) throws IOException {
+        this.out.writeUTF(message);
+    }
     @Override
     public void start() {
 
@@ -37,6 +36,7 @@ public class Cliente extends Thread{
         String mensaje;
         boolean salir = false;
 
+        // escribe un mensaje al servidor y lee otro
         while (!salir) {
 
             try {
@@ -45,9 +45,8 @@ public class Cliente extends Thread{
                 if(mensaje.equalsIgnoreCase("salir")) {
                     salir = true;
                 }
-
-                out.writeUTF(mensaje);
-                System.out.println("Servidor dice: " + in.readUTF());
+                this.write(mensaje);
+                System.out.println("Servidor dice: " + this.read());
             } catch (IOException e) {
                e.printStackTrace();
             }
@@ -61,11 +60,11 @@ public class Cliente extends Thread{
             Cliente cliente = new Cliente("127.0.0.1", 5000);
 
             // Leer mensaje del servidor
-            System.out.println("Servidor dice: " + cliente.in.readUTF());
+            System.out.println("Servidor dice: " + cliente.read());
 
             // Escribe el nombre y se lo manda al servidor
             String message = scanner.next();
-            cliente.out.writeUTF(message);
+            cliente.write(message);
 
             // Empieza el programa cliente
             cliente.start();
