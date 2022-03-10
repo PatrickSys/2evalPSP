@@ -1,15 +1,13 @@
-package utils;
+package Exception;
 
 /************************************************************************
  Made by        PatrickSys
- Date           26/02/2022
- Package        utils
+ Date           10/03/2022
+ Package        Exception
  Description:
  ************************************************************************/
-
-
-public class UserNullinputException extends NullPointerException{
-    public UserNullinputException() {
+public class ServerCacheMapException extends Exception {
+    public ServerCacheMapException() {
         super();
     }
 }

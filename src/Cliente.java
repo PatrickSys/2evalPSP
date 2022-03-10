@@ -21,15 +21,14 @@ public class Cliente extends Thread{
 
     }
 
-//    private void read() throws IOException {
-//        System.out.println(this.in.readUTF());
-//    }
-//
-//
-//    private void write() throws IOException {
-//        String message = scanner.next();
-//        this.out.writeUTF(message);
-//    }
+    private String read() throws IOException {
+        return this.in.readUTF();
+    }
+
+
+    private void write(String message) throws IOException {
+        this.out.writeUTF(message);
+    }
     @Override
     public void start() {
 
@@ -37,6 +36,7 @@ public class Cliente extends Thread{
         String mensaje;
         boolean salir = false;
 
+        // escribe un mensaje al servidor y lee otro
         while (!salir) {
 
             try {
@@ -45,36 +45,35 @@ public class Cliente extends Thread{
                 if(mensaje.equalsIgnoreCase("salir")) {
                     salir = true;
                 }
-
-                out.writeUTF(mensaje);
-                System.out.println("Servidor dice: " + in.readUTF());
+                this.write(mensaje);
+                System.out.println("Servidor dice: " + this.read());
             } catch (IOException e) {
                e.printStackTrace();
             }
         }
     }
 
-  public static void main(String[] args) {
-    try {
-      Scanner scanner = new Scanner(System.in);
+    public void run() {
+        try {
+            Scanner scanner = new Scanner(System.in);
 
-      Cliente cliente = new Cliente("127.0.0.1", 5000);
+            Cliente cliente = new Cliente("127.0.0.1", 5000);
 
-      // Leer mensaje del servidor
-      System.out.println("Servidor dice: " + cliente.in.readUTF());
+            // Leer mensaje del servidor
+            System.out.println("Servidor dice: " + cliente.read());
 
-      // Escribe el nombre y se lo manda al servidor
-      String message = scanner.next();
-      cliente.out.writeUTF(message);
+            // Escribe el nombre y se lo manda al servidor
+            String message = scanner.next();
+            cliente.write(message);
 
-      // Empieza el programa cliente
-      cliente.start();
-      cliente.join();
+            // Empieza el programa cliente
+            cliente.start();
+            cliente.join();
 
-      cliente.sc.close();
+            cliente.sc.close();
 
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
